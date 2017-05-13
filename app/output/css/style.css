@@ -1,0 +1,109 @@
+table{
+    margin: auto;
+    margin-bottom: 10%;
+    width: 70%;
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+
+tr{
+    height: 4ex;
+    text-align: center;
+    align-content: center;
+    border-bottom: 1px solid black;
+}
+
+td{
+    height: 90%;
+    text-align: center;
+    align-content: center;
+    border-left: 1px solid black;
+}
+
+.fulfill_bar{
+    background-color: #4fff24;
+    height: 2ex;
+}
+
+.background_bar{
+    background-color: #805313;
+    height: 2ex;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.td_box{
+    height: 2ex;
+    width: 70%;
+    margin-right: 15%;
+    margin-left: 15%;
+    text-align-all: center;
+}
+
+tr:nth-child(even){
+    background-color: aqua;
+}
+tr:nth-child(odd){
+    background-color: navajowhite;
+}
+thead{
+    background-color: burlywood;
+    font-weight: bold;
+}
+th{
+    background-color: burlywood;
+    font-weight: bold;
+    border-left: 1px solid black;
+}
+
+.header{
+    border-collapse: collapse;
+    margin: auto;
+    font-weight: bold;
+    text-align: right;
+}
+
+.logo{
+    border-collapse: collapse;
+    margin: auto;
+    align-content: left;
+}
+
+.flex_container{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: stretch;
+    align-items: stretch;
+    flex-direction: row;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+.flex_container4{
+    flex-wrap: wrap;
+    flex-direction: row;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+.flex_map{
+    flex-wrap: wrap;
+    flex-direction: row;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+body {  background-color: whitesmoke; }
+
+.flex_container2{
+    display: flex;
+    flex-direction: row;
+    height: 4ex;
+    margin: 3%;
+    margin-left:18%;
+    margin-right:18%;
+}
+
+.flex_container3{
+    display: flex;
+    flex-direction: row;
+    height: 4ex;
+    margin-left: 0%;
+}

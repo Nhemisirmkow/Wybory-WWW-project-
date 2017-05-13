@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link rel="stylesheet" media="screen and (max-width: 1020px)" type="text/css" href="../css/small.css">
+    <link rel="stylesheet" media="screen and (min-width: 1021px)" type="text/css" href="../css/big.css">
+    <title>Wyniki wyborów: Okręg {{ okręg_nazwa }}</title>
+
+</head>
+<body>
+    <div class="flex_container">
+        <div class="logo">
+            <img src="../logo.png" alt="Logo wyborów" title="Logo wyborów">
+        </div>
+
+        <div class="header">
+            <h1>Wybory Prezydenckie 2000<br>
+                Okręg : {{ okręg_nazwa }}</h1>
+        </div>
+    </div>
+    <section name="Statystyki głosów w okręgu">
+        <div class="flex_container">
+            <table>
+                <thead>
+                    <th colspan="2">STATYSTYKI</th>
+                </thead>
+                <tr>
+                    <td>Liczba gmin :</td>
+                    <td>{{ liczba_gmin }}</td>
+                </tr>
+                <tr>
+                    <td>Uprawnionych :</td>
+                    <td>{{ liczba_uprawnionych }}</td>
+                </tr>
+                <tr>
+                    <td>Kart wydanych :</td>
+                    <td>{{ liczba_kart_wydanych }}</td>
+                </tr>
+                <tr>
+                    <td>Głosów oddanych :</td>
+                    <td>{{ liczba_głosów_oddanych }}</td>
+                </tr>
+                <tr>
+                    <td>Głosów nieważnych :</td>
+                    <td>{{ liczba_głosów_nieważnych }}</td>
+                </tr>
+                <tr>
+                    <td>Głosów ważnych :</td>
+                    <td>{{ liczba_głosów_ważnych }}</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+    <h1 style="text-align: center">Wyniki kandydatów</h1>
+    <div class="flex_container2" style="">
+        {% for k in kandydaci %}
+            <div class="flex_container3" style="background-color: {{ k[1] }}; width: {{ k[3] }}%"></div>
+        {% endfor -%}
+    </div>
+    <section name="Wyniki szczegółowe">
+        <div class="flex_container">
+            <table>
+                <thead>
+                    <th>Lp.</th>
+                    <th>Imię i nazwisko</th>
+                    <th>Liczba zdobytych głosów</th>
+                    <th>Wynik wyborczy (%)</th>
+                    <th>Udział we wszystkich głosach</th>
+                    <th>Kolor na wykresie</th>
+                </thead>
+                {% for k in kandydaci %}
+                <tr>
+                    <td>{{ loop.index }}.</td>
+                    <td>{{ k[0] }}</td>
+                    <td>{{ k[2] }}</td>
+                    <td>{{ '%0.2f'| format(k[3]|float) }}%</td>
+                    <td>
+                        <div class="background_bar">
+                            <div class="fulfill_bar" style="width:{{ k[3] }}%"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="td_box" style="background-color:{{ k[1] }}"> </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </section>
+    <section name="Statystyki w poszczególnych gminach">
+        <h1 style="text-align: center">Statystyki w poszczególnych gminach</h1>
+        <div class="flex_container">
+            <table>
+                <thead>
+                    <th>Lp.</th>
+                    <th>Gmina</th>
+{#                    <th>Wyniki</th>#}
+                    <th>Uprawnieni</th>
+                    <th>Karty wydane</th>
+                    <th>Głosy oddane</th>
+                    <th>Głosy nieważne</th>
+                    <th>Głosy ważne</th>
+                </thead>
+                {% for gmina in gminy %}
+                <tr>
+                    <td>{{ loop.index }}.</td>
+                    <td><a href="../gmina/{{ gminy[gmina][0] }}.html">{{ gminy[gmina][0] }}</a></td>
+{#                    <td>  sds</td>#}
+                    <td>{{ gminy[gmina][2]['uprawnieni'] }}</td>
+                    <td>{{ gminy[gmina][2]['karty wydane'] }}</td>
+                    <td>{{ gminy[gmina][2]['głosy oddane'] }}</td>
+                    <td>{{ gminy[gmina][2]['głosy nieważne'] }}</td>
+                    <td>{{ gminy[gmina][2]['głosy ważne'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </section>
+</body>
+</html>
