@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" media="screen and (max-width: 1020px)" type="text/css" href="/static/css/small.css">
+    <link rel="stylesheet" media="screen and (min-width: 1021px)" type="text/css" href="/static/css/big.css">
+    <title>Wyniki wyborów: Województwo {{ województwo_nazwa }}</title>
+
+</head>
+<body>
+<div class="flex_container">
+    <div class="logo">
+        <img src="/static/img/logo.png" alt="Logo wyborów" title="Logo wyborów">
+    </div>
+
+    <div class="header">
+        <h1>Wybory Prezydenckie 2000<br>
+            Województwo : {{ w.nazwa }}</h1>
+    </div>
+</div>
+
+<div class="flex_container">
+    {% if request.user.is_authenticated %}
+        Witaj, {{ request.user.username }}.
+        <form method="POST" action="../logout">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <input type="submit" value="Wyloguj">
+        </form>
+    {% else %}
+        <form method="POST" action="../login">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            Użytkownik: <input type="text" name="username">
+            Hasło: <input type="password" name="password">
+            <input type="submit" value="Zaloguj">
+        </form>
+    {% endif %}
+</div>
+
+<div class="flex_container">
+    <form method="POST" action="../przekierujDoGminy">
+        By znaleźć gminę podaj fragment nazwy szukanej gminy:
+        {{ questionForm.as_p }}
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <p>
+            <input type="submit">
+        </p>
+    </form>
+</div>
+
+<section>
+    <h2 class="invisible_header">Statystyki głosów w województwie</h2>
+    <div class="flex_container">
+        <table>
+            <thead>
+            <th colspan="2">STATYSTYKI</th>
+            </thead>
+            <tr>
+                <td>Liczba okręgów :</td>
+                <td>{{ w.liczba_okręgów }}</td>
+            </tr>
+            <tr>
+                <td>Uprawnionych :</td>
+                <td>{{ w.uprawnionych }}</td>
+            </tr>
+            <tr>
+                <td>Kart wydanych :</td>
+                <td>{{ w.kart_wydanych }}</td>
+            </tr>
+            <tr>
+                <td>Głosów oddanych :</td>
+                <td>{{ w.głosów_oddanych }}</td>
+            </tr>
+            <tr>
+                <td>Głosów nieważnych :</td>
+                <td>{{ w.głosów_nieważnych }}</td>
+            </tr>
+            <tr>
+                <td>Głosów ważnych :</td>
+                <td>{{ w.głosów_ważnych }}</td>
+            </tr>
+        </table>
+    </div>
+</section>
+<h2 style="text-align: center">Wyniki kandydatów</h2>
+<div class="flex_container2" style="">
+    {% for k in kandydaci %}
+        <div class="flex_container3" style="background-color: {{ k.kolor }}; width: {{ k.procentowy_wynik }}%"></div>
+    {% endfor -%}
+</div>
+<section>
+    <h2 class="invisible_header">Wyniki szczegółowe</h2>
+    <div class="flex_container">
+        <table>
+            <thead>
+            <th>Lp.</th>
+            <th>Imię i nazwisko</th>
+            <th>Liczba zdobytych głosów</th>
+            <th>Wynik wyborczy (%)</th>
+            <th>Udział we wszystkich głosach</th>
+            <th>Kolor na wykresie</th>
+            </thead>
+            {% for k in kandydaci %}
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td>{{ k.nazwa }}</td>
+                    <td>{{ k.liczba_głosów }}</td>
+
+                    <td>{{ k.procentowy_wynik|floatformat:2 }}%</td>
+                    <td>
+                        <div class="background_bar">
+                            <div class="fulfill_bar" style="width:{{ k.procentowy_wynik }}%"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="td_box" style="background-color:{{ k.kolor }}"></div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+<section>
+    <h2 style="text-align: center">Statystyki w poszczególnych okręgach</h2>
+    <div class="flex_container">
+        <table>
+            <thead>
+            <th>Lp.</th>
+            <th>Okręg</th>
+            <th>Uprawnieni</th>
+            <th>Karty wydane</th>
+            <th>Głosy oddane</th>
+            <th>Głosy nieważne</th>
+            <th>Głosy ważne</th>
+            </thead>
+            {% for okręg in okręgi %}
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td><a href="../okręg/{{ okręg.numer }}">{{ okręg.numer }}</a></td>
+                    <td>{{ okręg.uprawnionych }}</td>
+                    <td>{{ okręg.kart_wydanych }}</td>
+                    <td>{{ okręg.głosów_oddanych }}</td>
+                    <td>{{ okręg.głosów_nieważnych }}</td>
+                    <td>{{ okręg.głosów_ważnych }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+</body>
+</html>

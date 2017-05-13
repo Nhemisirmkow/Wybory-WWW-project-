@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" media="screen and (max-width: 1020px)" type="text/css" href="/static/css/small.css">
+    <link rel="stylesheet" media="screen and (min-width: 1021px)" type="text/css" href="/static/css/big.css">
+    <title>Wyniki wyborów: Rzeczpospolita Polska</title>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['geochart']});
+        google.charts.setOnLoadCallback(drawRegionsMap);
+
+        function drawRegionsMap() {
+
+            var data = google.visualization.arrayToDataTable(
+                [
+                    ['Województwo', 'Frekwencja'],
+                    ['POMORSKIE', 62.83], ['ZACHODNIOPOMORSKIE', 60.14], ['KUJAWSKO-POMORSKIE', 62.08], ['LUBUSKIE', 61.02],
+                    ['WARMIŃSKO-MAZURSKIE', 58.13], ['MAZOWIECKIE', 61.41], ['PODLASKIE', 58.49], ['WIELKOPOLSKIE', 66.54],
+                    ['ŁÓDZKIE', 61.45], ['ŚWIĘTOKRZYSKIE', 58.85], ['LUBELSKIE', 59.04], ['PODKARPACKIE', 61.53],
+                    ['DOLNOŚLĄSKIE', 60.6], ['OPOLSKIE', 51.28], ['ŚLĄSKIE', 60.84], ['MAŁOPOLSKIE', 62.22]
+                ]
+            );
+
+            var options = {
+                region: 'PL',
+                resolution: 'provinces',
+                colorAxis: {colors: ['#f2cbc9', '#5b0601']},
+                enableRegionInteractivity: true
+            };
+
+            var poland_chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+            poland_chart.draw(data, options);
+
+            google.visualization.events.addListener(poland_chart, 'regionClick', clickHandler);
+
+            function clickHandler(eventData) {
+                window.location.href = '/zadanie2/województwo/' + eventData.region;
+            }
+
+            window.addEventListener('resize', function () {
+                poland_chart.draw(data, options);
+            }, false);
+        }
+    </script>
+
+</head>
+<body>
+<div class="flex_container">
+    <div class="logo">
+        <img src="/static/img/logo.png" alt="Logo wyborów" title="Logo wyborów">
+    </div>
+
+    <div class="header">
+        <h1>Wybory Prezydenckie 2000<br>
+            Rzeczpospolita Polska</h1>
+    </div>
+</div>
+
+<div class="flex_container">
+    {% if request.user.is_authenticated %}
+        Witaj, {{ request.user.username }}.
+        <form method="POST" action="logout">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <input type="submit" value="Wyloguj">
+        </form>
+    {% else %}
+        <form method="POST" action="login">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            Użytkownik: <input type="text" name="username">
+            Hasło: <input type="password" name="password">
+            <input type="submit" value="Zaloguj">
+        </form>
+    {% endif %}
+</div>
+<div class="flex_container">
+    <form method="POST" action="przekierujDoGminy">
+        By znaleźć gminę podaj fragment nazwy szukanej gminy:
+        {{ questionForm.as_p }}
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <p>
+            <input type="submit">
+        </p>
+    </form>
+</div>
+
+<section class="flex_container4">
+    <h2 class="invisible_header">Statystyki głosów w kraju</h2>
+
+    <div class="flex_map">
+        <div id="regions_div"></div>
+    </div>
+
+    <div class="flex_container4">
+        <table style="align-content:right">
+            <thead>
+            <th colspan="2">STATYSTYKI</th>
+            </thead>
+            <tr>
+                <td>Liczba województw :</td>
+                <td>{{ liczba_województw }}</td>
+            </tr>
+            <tr>
+                <td>Uprawnionych :</td>
+                <td>{{ kraj.uprawnionych }}</td>
+            </tr>
+            <tr>
+                <td>Kart wydanych :</td>
+                <td>{{ kraj.kart_wydanych }}</td>
+            </tr>
+            <tr>
+                <td>Głosów oddanych :</td>
+                <td>{{ kraj.głosów_oddanych }}</td>
+            </tr>
+            <tr>
+                <td>Głosów nieważnych :</td>
+                <td>{{ kraj.głosów_nieważnych }}</td>
+            </tr>
+            <tr>
+                <td>Głosów ważnych :</td>
+                <td>{{ kraj.głosów_ważnych }}</td>
+            </tr>
+        </table>
+</section>
+<h2 style="text-align: center">Wyniki kandydatów</h2>
+<div class="flex_container2" style="">
+    {% for k in kandydaci %}
+        <div class="flex_container3" style="background-color: {{ k.kolor }}; width: {{ k.procentowy_wynik }}%"></div>
+    {% endfor -%}
+</div>
+<section>
+    <h2 class="invisible_header">Wyniki szczegółowe</h2>
+    <div class="flex_container">
+        <table>
+            <thead>
+            <th>Lp.</th>
+            <th>Imię i nazwisko</th>
+            <th>Liczba zdobytych głosów</th>
+            <th>Wynik wyborczy (%)</th>
+            <th>Udział we wszystkich głosach</th>
+            <th>Kolor na wykresie</th>
+            </thead>
+            {% for k in kandydaci %}
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td>{{ k.nazwa }}</td>
+                    <td>{{ k.liczba_głosów }}</td>
+
+                    <td>{{ k.procentowy_wynik|floatformat:2 }}%</td>
+                    <td>
+                        <div class="background_bar">
+                            <div class="fulfill_bar" style="width:{{ k.procentowy_wynik }}%"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="td_box" style="background-color:{{ k.kolor }}"></div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+<section>
+    <h2 style="text-align: center">Statystyki w poszczególnych województwach</h2>
+    <div class="flex_container">
+        <table>
+            <thead>
+            <th>Lp.</th>
+            <th>Województwo</th>
+            <th>Uprawnieni</th>
+            <th>Karty wydane</th>
+            <th>Głosy oddane</th>
+            <th>Głosy nieważne</th>
+            <th>Głosy ważne</th>
+            </thead>
+            {% for w in województwa %}
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td><a href="województwo/{{ w.nazwa_skrót }}">{{ w.nazwa }}</a></td>
+                    <td>{{ w.uprawnionych }}</td>
+                    <td>{{ w.kart_wydanych }}</td>
+                    <td>{{ w.głosów_oddanych }}</td>
+                    <td>{{ w.głosów_nieważnych }}</td>
+                    <td>{{ w.głosów_ważnych }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+</body>
+</html>

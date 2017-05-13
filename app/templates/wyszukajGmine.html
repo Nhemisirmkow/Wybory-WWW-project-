@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:Użytkownik="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" media="screen and (max-width: 1020px)" type="text/css" href="/static/css/small.css">
+    <link rel="stylesheet" media="screen and (min-width: 1021px)" type="text/css" href="/static/css/big.css">
+    <title>Wyniki wyborów: Rzeczpospolita Polska</title>
+
+</head>
+<body>
+    <div class="flex_container">
+        <div class="logo">
+            <img src="/static/img/logo.png" alt="Logo wyborów" title="Logo wyborów">
+        </div>
+
+        <div class="header">
+            <h1>Wybory Prezydenckie 2000<br>
+                Rzeczpospolita Polska</h1>
+        </div>
+    </div>
+
+    <section name="Wybierz szukaną gminę!">
+        <h1 style="text-align: center">Wybierz szukaną gminę!</h1>
+        <div class="flex_container">
+            <table>
+                <thead>
+                    <th>Lp.</th>
+                    <th>Gmina</th>
+                    <th>Okręg</th>
+                    <th>Kod gminy</th>
+                </thead>
+                {% for gmina in gminy %}
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td><a href="gmina/{{ gmina.id_gminy }}">{{ gmina.nazwa }}</a></td>
+                    <td>{{ gmina.okręg }}</td>
+                    <td>{{ gmina.id_gminy }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </section>
+
+</body>
+</html>
